@@ -1,5 +1,7 @@
 from .BBDD import BBDD
 import mysql.connector
+import jwt
+import datetime
 from .User import User
 
 class UserModel:
@@ -27,5 +29,17 @@ class UserModel:
         except mysql.connector.Error as e:
             print(f"Error al obtener usuarios: {e}")
             return []
+        finally:
+            cursor.close()
+    
+    def createUser(self, name, lastname, email, paswd):
+        cursor = self.conexion.cursor();
+        try:
+            sql = "INSERT INTO usuario(name, lastname, email, pasword) VALUES(%s, %s, %s, %s)"
+            cursor.execute(sql, (name, lastname, email, paswd))
+            self.conexion.commit()
+            print("Datos insertados");
+        except mysql.connector.Error as e:
+            print(f"Error en la consulta: {e}",  self.conexion.commit())
         finally:
             cursor.close()
