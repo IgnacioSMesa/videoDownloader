@@ -1,10 +1,37 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
+import { data, useNavigate } from "react-router-dom";
 
 
 export default function Nav() {
   const navigate = useNavigate();
+  let isLogged = localStorage.getItem('isLoggedIn');
+  const logout = () =>{
+    let sessionid = isLogged;
+    let datos = {sessionid}
+    let datosJson = JSON.stringify(datos);
+  
+    fetch('http://127.0.0.1:5000/api/logout', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          
+      },
+      body: datosJson
+
+    }).then(data =>{
+      if (data){
+        localStorage.setItem('isLoggedIn', false);
+        localStorage.removeItem('authToken');
+        navigate('/login')
+      }else if(!data.ok){
+        console.log("error  ")
+      }
+    }) .catch(error => {
+      console.error("Error:", error);
+  });
+  }
 
   const registerNavigate = () =>{
     navigate("/register")
@@ -13,6 +40,7 @@ export default function Nav() {
     navigate("/login")
   }
   return (
+
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">Descarga videos por url</a>
@@ -32,6 +60,9 @@ export default function Nav() {
             <li className="nav-item">
               <button onClick={loginNavigate} className="nav-link active" aria-current="page" href="#">
                 Iniciar sesión
+              </button>
+              <button onClick={logout} className="nav-link active" aria-current="page" href="#">
+                Cerrar sesion
               </button>
             </li>
             <li className="nav-item">

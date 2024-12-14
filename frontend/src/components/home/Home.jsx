@@ -1,12 +1,12 @@
 // src/components/home/Home.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Nav from "../nav/Nav";
 import './home.css';
 import { data } from 'react-router-dom';
 
 export default function Home() {
     
-
+    
     return (
         <>
             <nav><Nav /></nav>

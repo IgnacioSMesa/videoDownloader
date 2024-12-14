@@ -11,6 +11,12 @@ export default function Register() {
         let lastname = document.getElementById('lastname').value;
         let email = document.getElementById('email').value;
         let paswd = document.getElementById('password').value;
+        let repeatPaswd = document.getElementById('repeatPassword').value;
+    
+        if (paswd !== repeatPaswd) {
+            alert("Las contraseñas no coinciden");
+            return;
+        }
         
         let datos = {
             name,
@@ -19,7 +25,6 @@ export default function Register() {
             paswd
         };
         
-        // Convertir a JSON
         let datosJson = JSON.stringify(datos);
         
         fetch('http://127.0.0.1:5000/api/insert', {
@@ -37,10 +42,16 @@ export default function Register() {
             }
             return response.json();
         })
-        .then(data => {
-            console.log("Registro exitoso: ", data);
-            // Navegar a otra ruta después de un registro exitoso
-            navigate('/somewhere'); // Reemplaza '/somewhere' con la ruta a la que deseas navegar
+        .then(response => {
+            console.log("Response completa:", response); 
+            if (response.message.token) {
+                const token = response.message.token; 
+                localStorage.setItem('authToken', token); 
+                alert("Registro exitoso");
+                navigate('/login');
+            } else {
+                console.error("Token no encontrado en la respuesta");
+            }
         })
         .catch(error => {
             console.error("Error:", error);
